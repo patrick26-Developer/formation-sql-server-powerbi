@@ -295,6 +295,13 @@ ServiceFabricBackup/
 *.mdf
 *.ldf
 *.ndf
+*.bak
+*.trn
+# Backup*/ (VS template above) also matches our own backups/ dir case-insensitively on Windows —
+# re-include the directory itself before re-including the file inside it.
+!backups/
+backups/*
+!backups/.gitkeep
 
 # Business Intelligence projects
 *.rdl.data
