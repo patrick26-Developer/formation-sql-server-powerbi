@@ -17,10 +17,21 @@ L'objectif n'est **pas l'exhaustivité théorique**, mais l'éligibilité pratiq
 
 ## Stack & environnement
 - Windows 11, PowerShell (terminal principal)
-- SQL Server 2025 Developer (édition Standard), installation Basic, mode d'authentification mixte activé
+- SQL Server 2025 Developer (édition Standard), installation Basic — mode d'authentification mixte **prévu mais non confirmé actif** : `SELECT SERVERPROPERTY('IsIntegratedSecurityOnly')` a renvoyé `1` (Windows uniquement) au Jour 6, voir `docs/jour-06.md` pour la procédure d'activation manuelle
 - SSMS 22
 - Power BI Desktop (+ Power BI Report Builder à partir du Jour 10)
 - Base de travail : `SuperetteCG` (schéma métier connu de De Grâce, réutilisé depuis son projet Superette existant en NestJS/Prisma)
+
+## Connexion
+Le serveur SQL Server à utiliser dans **tous** les scripts, connexions (SSMS, PowerShell, Power BI) est :
+```
+DESKTOP-3K8VBUM
+```
+(instance par défaut, Developer Edition, SQL Server 2025). `.` ou `localhost` fonctionnent aussi (même instance par défaut).
+
+**Ne jamais utiliser** `DESKTOP-3K8VBUM\SQLEXPRESS` — c'est une instance Express distincte, non utilisée dans ce projet. Une confusion ici entraînerait un débogage sur un faux problème (base introuvable, connexion refusée alors que l'instance visée n'est simplement pas la bonne).
+
+**Encodage `sqlcmd`** : toujours ajouter `-f 65001` lors de l'exécution d'un script `.sql` contenant des caractères accentués via `sqlcmd` (ex. `sqlcmd -S DESKTOP-3K8VBUM -E -i sql/xxx.sql -f 65001 -b`). Sans ce flag, `sqlcmd` (ODBC Driver 17) lit les fichiers UTF-8 avec le mauvais codepage et corrompt silencieusement les caractères accentués **directement dans les données stockées** (pas seulement à l'affichage) — vécu au Jour 3 sur `sql/02_donnees_test_superettecg.sql`.
 
 ## Structure du repo — à respecter strictement
 ```
